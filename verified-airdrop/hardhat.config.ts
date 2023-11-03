@@ -9,7 +9,7 @@ import "@nomicfoundation/hardhat-toolbox";
 // This key is meant to be public, please do not report or open a github issue
 const providerApiKey = process.env.ALCHEMY_API_KEY || "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 // // If not set, it uses the hardhat account 0 private key.
-const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY ?? "0xe7be730521b23a5f4af6ab21a9ce936df7513bd8790edd4de8517a144e3649a0";
+const deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY ?? "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 const config: HardhatUserConfig = {
   solidity: {
