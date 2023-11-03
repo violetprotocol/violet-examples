@@ -1,21 +1,14 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
 
-  const lockedAmount = ethers.parseEther("0.001");
 
-  const lock = await ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  const compliantToken = await ethers.deployContract("CompliantERC20", ["CompliantToken", "CPTK", "0x2a0988b07C538a097Ad8b693369f6e42991591F5"]);
 
-  await lock.waitForDeployment();
+  await compliantToken.waitForDeployment();
 
   console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
+    `Compliant Token deployed to ${compliantToken.target}`
   );
 }
 
