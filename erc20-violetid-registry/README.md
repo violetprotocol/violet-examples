@@ -1,13 +1,29 @@
-# Sample Hardhat Project
+# ERC20 Compliant Token - VioletID Registry example
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project aims to demonstrate a simple example of how to integrate with the VioletID
+It comes with a sample ERC20 contract, and a deploy script that uses the correct VioletID address for optimismGoerli
 
-Try running some of the following tasks:
+You can check a frontend with a live version of this demo [here](http://erc20-compliant.violet.co)
+
+Find all VioletID live addresses at our [docs](https://docs.violet.co)
+
+
+## Setup
+
+#### Install the project by running the command
 
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+yarn install
+```
+
+#### Compile the test contract
+
+```shell
+yarn hardhat compile
+```
+
+#### Deploy the test contract on optimismGoerli:
+
+```shell
+yarn hardhat run scripts/deploy.ts --network optimismGoerli
 ```
