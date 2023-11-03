@@ -23,20 +23,18 @@ contract CompliantERC20 is ERC20 {
         _;
     }
 
-    function _transfer(
+    // _update serves the same functionality as _transfer
+    // All customizations to transfers, mints, and burns should be done by overriding this function.
+    // https://docs.openzeppelin.com/contracts/5.x/api/token/erc20#ERC20-_transfer-address-address-uint256-
+    function _update(
         address from,
         address to,
         uint256 amount
     ) internal virtual override onlyVioletIDHolders(to) onlyVioletIDHolders(from) {
-        super._transfer(from, to, amount);
+        super._update(from, to, amount);
     }
 
 	function mint(address account, uint256 amount) public virtual {
 		_mint(account, amount);
 	}
-
-	function _mint(address account, uint256 amount) internal virtual override onlyVioletIDHolders(account) {
-        super._mint(account, amount);
-    }
-
 }
