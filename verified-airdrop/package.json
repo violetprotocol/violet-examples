@@ -1,7 +1,7 @@
 {
   "name": "Verified-Airdrop",
   "version": "1.0.0",
-  "description": "Airdrop example project using violetid registry",
+  "description": "Airdrop example project using the violetID registry",
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
