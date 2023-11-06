@@ -12,7 +12,7 @@ import { IVioletID } from "@violetprotocol/violetid/contracts/IVioletID.sol";
  */
 contract VerifiedAirdrop is ERC20 {
     IVioletID violetID;
-    uint256 public constant airdropAmount = 100;
+    uint256 public constant airdropAmount = 100e18;
 
     mapping(address => bool) public claimed;
 
