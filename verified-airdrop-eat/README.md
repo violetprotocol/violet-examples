@@ -1,11 +1,12 @@
-# ERC20 Compliant Token - VioletID Registry example
+# Verified Airdrop - Ethereum Access Token example
 
-This project aims to demonstrate a simple example of how to integrate with the VioletID registry smart contract.
-It comes with a sample ERC20 contract, and a deploy script that uses the correct VioletID address on Optimism Goerli.
+This project aims to demonstrate a simple example of how to integrate with the Ethereum Access Token.
+It comes with a sample Airdrop contract, and a deploy script that uses the correct EATVerifier address on Optimism Goerli.
 
-You can check a frontend with a live version of this demo [here](https://erc20-violetid-example.violet.co/)
+You can check a frontend with a live version of this demo [here](https://eat-airdrop-demo.violet.co/)
+The frontend is located on the `frontend` folder, all relevant code can be found on the `frontend/pages/index.tsx` and `frontend/pages/callback.tsx` files
 
-Find all VioletID live addresses at our [docs](https://docs.violet.co)
+Find all EATVerifier live addresses at our [docs](https://docs.violet.co)
 
 
 ## Setup
@@ -26,4 +27,12 @@ yarn hardhat compile
 
 ```shell
 yarn hardhat run scripts/deploy.ts --network optimismGoerli
+```
+
+
+#### Run the frontend locally
+
+```shell
+cd frontend
+yarn dev
 ```
