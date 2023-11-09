@@ -18,6 +18,7 @@ const Home: NextPage = () => {
   const status = useConnectionStatus()
   const address = useAddress()
   const signer = useSigner()
+  // The verified airdrop address in optimismGoerli
   const verifiedAirdropAddress = '0xae44841b3634D5DEAba372f5Fb822582817ea556'
   const [packedTxData, setPackedTxData] = useState<string>('')
   const [functionSignature, setFunctionSignature] = useState<string>('')
@@ -75,11 +76,13 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (address && chain?.chainId == 420) {
       const builtAuthorizationUrl = buildAuthorizationUrl({
+        // Add your own violet client-id that you received from our support
         clientId:
-          '7dbf8fbd3896d47e8d17f33a96189c2a9f91748f6dcdd9394de01bf52c8b0af2',
+          '145fdfe2afe99aec46a2d73a55ddf25508f336488b5897fdb81d9318b1839f24',
         apiUrl: 'https://staging.k8s.app.violet.co',
+        // Add your callback URL
         redirectUrl:
-          'https://dd3a-2001-7d0-81bc-ae80-f0e8-afa4-d680-509c.ngrok-free.app/callback',
+          'https://eat-airdrop-demo.violet.co/callback',
         transaction: {
           data: packedTxData,
           functionSignature: functionSignature,
