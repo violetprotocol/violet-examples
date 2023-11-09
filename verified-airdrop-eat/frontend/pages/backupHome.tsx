@@ -1,7 +1,7 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import styles from "../styles/Home.module.css";
-import Image from "next/image";
-import { NextPage } from "next";
+import { ConnectWallet } from '@thirdweb-dev/react'
+import styles from '../styles/Home.module.css'
+import Image from 'next/image'
+import { NextPage } from 'next'
 
 const Home: NextPage = () => {
   return (
@@ -9,7 +9,7 @@ const Home: NextPage = () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>
-            Welcome to{" "}
+            Welcome to{' '}
             <span className={styles.gradientText0}>
               <a
                 href="https://thirdweb.com/"
@@ -22,16 +22,16 @@ const Home: NextPage = () => {
           </h1>
 
           <p className={styles.description}>
-            Get started by configuring your desired network in{" "}
-            <code className={styles.code}>src/index.js</code>, then modify the{" "}
+            Get started by configuring your desired network in{' '}
+            <code className={styles.code}>src/index.js</code>, then modify the{' '}
             <code className={styles.code}>src/App.js</code> file!
           </p>
 
           <div className={styles.connect}>
             <ConnectWallet
               dropdownPosition={{
-                side: "bottom",
-                align: "center",
+                side: 'bottom',
+                align: 'center',
               }}
             />
           </div>
@@ -103,7 +103,7 @@ const Home: NextPage = () => {
         </div>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  basePath: "",
-};
+  basePath: '',
+  transpilePackages: ["@violetprotocol/sdk"],
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
