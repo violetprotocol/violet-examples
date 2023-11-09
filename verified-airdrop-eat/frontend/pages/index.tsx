@@ -21,11 +21,17 @@ const Home: NextPage = () => {
   const verifiedAirdropAddress = '0xae44841b3634D5DEAba372f5Fb822582817ea556'
   const [packedTxData, setPackedTxData] = useState<string>('')
   const [functionSignature, setFunctionSignature] = useState<string>('')
+  /** State that keeps track if user already claimed the airdrop */
   const [eligible, setEligible] = useState<boolean>()
   const [authorizationUrl, setAuthorizationUrl] = useState<string>()
-  const [isPageLoading, setPageLoading] = useState<boolean>(true);
-  const [isWrongChain, setIsWrongChain] = useState<boolean>();
+  const [isPageLoading, setPageLoading] = useState<boolean>(true)
+  const [isWrongChain, setIsWrongChain] = useState<boolean>()
 
+  /**
+   * Instantiate the contract
+   * Get function signature hash
+   * call packParameters from violet-sdk to generate txData
+   * */
   useEffect(() => {
     if (signer && address && chain?.chainId == 420) {
       const ethersAidropContract = new ethers.Contract(
@@ -51,6 +57,9 @@ const Home: NextPage = () => {
     }
   }, [signer, address, chain])
 
+  /**
+   * Aux hook to make sure user connected in optimismGoerli
+   * */
   useEffect(() => {
     if (chain?.chainId == 420) {
       setIsWrongChain(false)
@@ -59,6 +68,10 @@ const Home: NextPage = () => {
     }
   }, [chain])
 
+  /**
+   * Use Txdata generated previously from state
+   * Build authorization url using buildAuthorizationUrl from violet-sdk
+   * */
   useEffect(() => {
     if (address && chain?.chainId == 420) {
       const builtAuthorizationUrl = buildAuthorizationUrl({
@@ -113,13 +126,13 @@ const Home: NextPage = () => {
               }}
             />
           </div>
-          { isWrongChain && status == 'connected'
-          ? 
-              (<p className={styles.description}>
-                Unsupported network, please connect to optimism goerli
-              </p>)
-          : <div></div>
-          }
+          {isWrongChain && status == 'connected' ? (
+            <p className={styles.description}>
+              Unsupported network, please connect to optimism goerli
+            </p>
+          ) : (
+            <div></div>
+          )}
 
           {!isPageLoading && status == 'connected' && !isWrongChain ? (
             <div>
@@ -129,6 +142,10 @@ const Home: NextPage = () => {
                 your tokens
               </p>
               {eligible ? (
+                /**
+                 * Redirect user to violet authorization url
+                 * Violet will then redirect the user to your callback page
+                 * */
                 <button
                   className={styles.buttonRound}
                   onClick={async () => {

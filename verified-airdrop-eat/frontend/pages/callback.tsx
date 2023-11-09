@@ -12,17 +12,29 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Circles } from 'react-loader-spinner'
 
+/**
+ * This is the format which Violet will return the token
+ * on the query parameters of your callback page
+ * */
 export interface EthereumAccessToken {
   expiry: number
   signature: Signature
 }
 
+/**
+ * Standard EIP712 signature interface
+ * */
 export interface Signature {
   v: number
   r: string
   s: string
 }
 
+/**
+ * Auxiliary method to transform the signature from a string
+ * into the EIP712 structure. This is for example purposes
+ * and you can use the splitSignature method exported from the violet-sdk
+ * */
 export const splitSignature = (signature: string): Signature => {
   return {
     v: parseInt(signature.substring(130, 132), 16),
@@ -41,16 +53,34 @@ const Home: NextPage = () => {
     verifiedAirdropAddress,
     VerifiedAirdropAbi,
   )
+  /**
+   *  Hook from thirdweb-sdk to call contract functions
+   *  You can call your contract that is gated with EAT with any framework
+   *  such as wagmi or web3js, just make sure to pass the EAT as argument
+   *  to the function.
+   *  */
   const {
     mutateAsync,
     isLoading: isWriteLoading,
     error: error,
   } = useContractWrite(contract, 'claimAirdrop')
+  /**
+   *  State to keep track of our received token
+   *  */
   const [ethereumAccessToken, setEthereumAccessToken] =
     useState<EthereumAccessToken>()
   const [txError, setTxError] = useState()
   const [tx, setTx] = useState<string>()
 
+  /**
+   *  Decodes the token from base64 into:
+   *  {
+   *    token: string
+   *    expiry: number
+   *  }
+   *  Furthermore, splits the signature into the three components
+   *  mentioned above on the Signature interface
+   *  */
   useEffect(() => {
     if (base64EncodedToken) {
       const eat = JSON.parse(atob(base64EncodedToken.toString()))
@@ -60,6 +90,11 @@ const Home: NextPage = () => {
     }
   }, [base64EncodedToken])
 
+  /**
+   *  Hook that uses thirdweb-sdk to send the transaction
+   *  in case our token was correctly received, parsed
+   *  and is present on the state
+   *  */
   useEffect(() => {
     if (
       ethereumAccessToken?.expiry &&
