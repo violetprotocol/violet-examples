@@ -11,7 +11,7 @@ import { VerifiedAirdropAbi } from '../abis/VerifiedAirdrop'
 import { packParameters } from '@violetprotocol/ethereum-access-token-helpers/dist/utils'
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { authorize, buildAuthorizationUrl } from '@violetprotocol/sdk'
+import { buildAuthorizationUrl } from '@violetprotocol/sdk'
 
 const Home: NextPage = () => {
   const chain = useChain()
@@ -21,12 +21,13 @@ const Home: NextPage = () => {
   const verifiedAirdropAddress = '0xae44841b3634D5DEAba372f5Fb822582817ea556'
   const [packedTxData, setPackedTxData] = useState<string>('')
   const [functionSignature, setFunctionSignature] = useState<string>('')
-  const [eligible, setEligible] = useState<boolean>();
-  const [ authorizationUrl, setAuthorizationUrl ] = useState<string>();
-
+  const [eligible, setEligible] = useState<boolean>()
+  const [authorizationUrl, setAuthorizationUrl] = useState<string>()
+  const [isPageLoading, setPageLoading] = useState<boolean>(true);
+  const [isWrongChain, setIsWrongChain] = useState<boolean>();
 
   useEffect(() => {
-    if (signer && address) {
+    if (signer && address && chain?.chainId == 420) {
       const ethersAidropContract = new ethers.Contract(
         verifiedAirdropAddress,
         VerifiedAirdropAbi,
@@ -41,34 +42,50 @@ const Home: NextPage = () => {
         setPackedTxData(
           packParameters(ethersAidropContract.interface, 'claimAirdrop', []),
         )
-        ethersAidropContract.callStatic.claimed(address).then((claimedResult) => {
-          setEligible(!claimedResult)
-        })
+        ethersAidropContract.callStatic
+          .claimed(address)
+          .then((claimedResult) => {
+            setEligible(!claimedResult)
+          })
       }
     }
-  }, [signer, address])
+  }, [signer, address, chain])
 
   useEffect(() => {
-    if (address && chain) {
+    if (chain?.chainId == 420) {
+      setIsWrongChain(false)
+    } else {
+      setIsWrongChain(true)
+    }
+  }, [chain])
+
+  useEffect(() => {
+    if (address && chain?.chainId == 420) {
       const builtAuthorizationUrl = buildAuthorizationUrl({
-        clientId: "7dbf8fbd3896d47e8d17f33a96189c2a9f91748f6dcdd9394de01bf52c8b0af2",
+        clientId:
+          '7dbf8fbd3896d47e8d17f33a96189c2a9f91748f6dcdd9394de01bf52c8b0af2',
         apiUrl: 'https://staging.k8s.app.violet.co',
-        redirectUrl: 'https://dd3a-2001-7d0-81bc-ae80-f0e8-afa4-d680-509c.ngrok-free.app/callback',
+        redirectUrl:
+          'https://dd3a-2001-7d0-81bc-ae80-f0e8-afa4-d680-509c.ngrok-free.app/callback',
         transaction: {
           data: packedTxData,
           functionSignature: functionSignature,
-          targetContract: verifiedAirdropAddress
+          targetContract: verifiedAirdropAddress,
         },
         address: address,
-        chainId: chain?.chainId
+        chainId: chain?.chainId,
       })
-      setAuthorizationUrl(builtAuthorizationUrl);
+      setAuthorizationUrl(builtAuthorizationUrl)
     }
-  }, [address, chain, functionSignature, packedTxData]);
+  }, [address, chain, functionSignature, packedTxData])
 
-  if (status === 'connected' && chain?.chainId != 420) {
-    return <div>Unsupported network, please connect to Optimism Goerli</div>
-  }
+  useEffect(() => {
+    if (authorizationUrl == null || eligible == null) {
+      setPageLoading(true)
+    } else {
+      setPageLoading(false)
+    }
+  }, [authorizationUrl, eligible])
 
   return (
     <main className={styles.main}>
@@ -76,9 +93,7 @@ const Home: NextPage = () => {
         <div className={styles.header}>
           <h1 className={styles.title}>
             <span className={styles.gradientText0}>
-              <a>
-                Violet EAT {''}
-              </a>
+              <a href="https://docs.violet.co">Violet EAT {''}</a>
             </span>
             Verified airdrop demo
           </h1>
@@ -86,9 +101,7 @@ const Home: NextPage = () => {
           <p className={styles.description}>
             Claim an aidrop by enrolling and authenticating with{' '}
             <span className={styles.gradientText0}>
-              <a>
-                Violet
-              </a>
+              <a>Violet</a>
             </span>
           </p>
 
@@ -100,35 +113,38 @@ const Home: NextPage = () => {
               }}
             />
           </div>
-
-
-          <p className={styles.description}>
-            You have {eligible ? 'not yet claimed ' : 'already claimed '} your tokens
-          </p>
-          {
-eligible ? 
-          <button
-            className={styles.cardText}
-            onClick={async () => {
-              if (authorizationUrl)
-              window.location.href = authorizationUrl;
-            }}
-          >
-            Claim
-          </button>
-: <a className={styles.gradientText2}>Claimed! 🎉 </a>
+          { isWrongChain && status == 'connected'
+          ? 
+              (<p className={styles.description}>
+                Unsupported network, please connect to optimism goerli
+              </p>)
+          : <div></div>
           }
-          <button
-            className={styles.buttonRound}
-            onClick={async () => {
-              if (authorizationUrl)
-              window.location.href = authorizationUrl;
-            }}
-          >
-            <a className={styles.gradientText0}>
-Claim
-            </a>
-          </button>
+
+          {!isPageLoading && status == 'connected' && !isWrongChain ? (
+            <div>
+              {' '}
+              <p className={styles.description}>
+                You have {eligible ? 'not yet claimed ' : 'already claimed '}{' '}
+                your tokens
+              </p>
+              {eligible ? (
+                <button
+                  className={styles.buttonRound}
+                  onClick={async () => {
+                    if (authorizationUrl)
+                      window.location.href = authorizationUrl
+                  }}
+                >
+                  <a className={styles.gradientText0}>Claim</a>
+                </button>
+              ) : (
+                <a className={styles.gradientText2}>Claimed! 🎉 </a>
+              )}
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
     </main>

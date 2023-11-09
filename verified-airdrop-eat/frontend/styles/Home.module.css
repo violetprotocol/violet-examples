@@ -2,6 +2,7 @@
   width: 100%;
   max-width: 1440px;
   padding: 0 1rem;
+  text-align: center;
   margin: 0 auto;
 }
 
@@ -33,7 +34,6 @@
   -webkit-text-fill-color: transparent;
 }
 
-
 .title a:hover,
 .title a:focus,
 .title a:active {
@@ -53,6 +53,7 @@
 
 .connect {
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .description {
@@ -71,8 +72,9 @@
 
 .grid {
   display: flex;
-  justify-content: left;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  /* flex-wrap: wrap; */
   gap: 20px;
 }
 
@@ -106,14 +108,13 @@
 }
 
 .buttonRound:hover {
- background-color: #555;
+  background-color: #555;
 }
 
 .buttonRound:active {
- box-shadow: 0 0 2px darkslategray;
- transform: translateY(2px);
+  box-shadow: 0 0 2px darkslategray;
+  transform: translateY(2px);
 }
-
 
 .cardText {
   /* text-decoration: underline; */

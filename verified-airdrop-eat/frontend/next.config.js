@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   basePath: '',
-  transpilePackages: ["@violetprotocol/sdk"],
+  transpilePackages: ['@violetprotocol/sdk'],
 }
 
 module.exports = nextConfig
