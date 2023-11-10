@@ -1,6 +1,6 @@
 # Verified Airdrop - Ethereum Access Token example
 
-This project aims to demonstrate a simple example of how to integrate with the Ethereum Access Token.
+This project aims to demonstrate a simple example of how to integrate with Violet using Ethereum Access Tokens.
 It comes with a sample Airdrop contract, and a deploy script that uses the correct EATVerifier address on Optimism Goerli.
 
 You can check a frontend with a live version of this demo [here](https://eat-airdrop-demo.violet.co/)
