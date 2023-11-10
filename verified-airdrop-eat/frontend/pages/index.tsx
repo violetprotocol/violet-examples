@@ -79,7 +79,7 @@ const Home: NextPage = () => {
         // Add your own violet client-id that you received from our support
         clientId:
           '145fdfe2afe99aec46a2d73a55ddf25508f336488b5897fdb81d9318b1839f24',
-        apiUrl: 'https://staging.k8s.app.violet.co',
+        apiUrl: 'https://sandbox.violet.co',
         // Add your callback URL
         redirectUrl:
           'https://eat-airdrop-demo.violet.co/callback',
