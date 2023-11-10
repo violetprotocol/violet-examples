@@ -40,21 +40,18 @@ const Home: NextPage = () => {
         VerifiedAirdropAbi,
         signer,
       )
-      if (ethersAidropContract) {
-        const functionFragment =
-          ethersAidropContract.interface.getFunction('claimAirdrop')
-        setFunctionSignature(
-          ethersAidropContract.interface.getSighash(functionFragment),
-        )
-        setPackedTxData(
-          packParameters(ethersAidropContract.interface, 'claimAirdrop', []),
-        )
-        ethersAidropContract.callStatic
-          .claimed(address)
-          .then((claimedResult) => {
-            setEligible(!claimedResult)
-          })
-      }
+      if (!ethersAidropContract) return
+      const functionFragment =
+        ethersAidropContract.interface.getFunction('claimAirdrop')
+      setFunctionSignature(
+        ethersAidropContract.interface.getSighash(functionFragment),
+      )
+      setPackedTxData(
+        packParameters(ethersAidropContract.interface, 'claimAirdrop', []),
+      )
+      ethersAidropContract.callStatic.claimed(address).then((claimedResult) => {
+        setEligible(!claimedResult)
+      })
     }
   }, [signer, address, chain])
 
@@ -81,8 +78,7 @@ const Home: NextPage = () => {
           '145fdfe2afe99aec46a2d73a55ddf25508f336488b5897fdb81d9318b1839f24',
         apiUrl: 'https://sandbox.violet.co',
         // Add your callback URL
-        redirectUrl:
-          'https://eat-airdrop-demo.violet.co/callback',
+        redirectUrl: 'https://eat-airdrop-demo.violet.co/callback',
         transaction: {
           data: packedTxData,
           functionSignature: functionSignature,
