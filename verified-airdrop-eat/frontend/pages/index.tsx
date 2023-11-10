@@ -89,7 +89,7 @@ const Home: NextPage = () => {
           targetContract: verifiedAirdropAddress,
         },
         address: address,
-        chainId: chain?.chainId,
+        chainId: chain.chainId,
       })
       setAuthorizationUrl(builtAuthorizationUrl)
     }
