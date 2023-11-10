@@ -6,7 +6,7 @@ It comes with a sample Airdrop contract, and a deploy script that uses the corre
 You can check a frontend with a live version of this demo [here](https://eat-airdrop-demo.violet.co/)
 The frontend is located on the `frontend` folder, all relevant code can be found on the `frontend/pages/index.tsx` and `frontend/pages/callback.tsx` files
 
-Find all EATVerifier live addresses at our [docs](https://docs.violet.co)
+Find all EATVerifier live addresses in our [docs](https://docs.violet.co).
 
 
 ## Setup
