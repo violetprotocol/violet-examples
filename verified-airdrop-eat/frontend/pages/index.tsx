@@ -30,9 +30,8 @@ const Home: NextPage = () => {
   const [isWrongChain, setIsWrongChain] = useState<boolean>()
 
   /**
-   * Instantiate the contract
-   * Get function signature hash
-   * call packParameters from violet-sdk to generate txData
+   * Instantiate the contract and
+   * check address eligibility of airdrop
    * */
   useEffect(() => {
     if (signer && address && chain?.chainId == 420) {
@@ -60,7 +59,6 @@ const Home: NextPage = () => {
   }, [chain])
 
   /**
-   * Use Txdata generated previously from state
    * Build authorization url using buildAuthorizationUrl from violet-sdk
    * */
   useEffect(() => {
