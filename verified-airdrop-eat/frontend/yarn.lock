@@ -2315,10 +2315,10 @@
   resolved "https://registry.yarnpkg.com/@violetprotocol/ethereum-access-token-helpers/-/ethereum-access-token-helpers-0.2.0.tgz#e826309674c1dc8e47c2c8f00664ad0b0c9a3ea7"
   integrity sha512-YrQSEFmCwnrjKTG3oS9bbA1CwzGQB95EpH+eYPIZ8UQFTO11+XOWlFq6RhZ6MhvSpJK5xxQsvp2GsBRmj0yeZg==
 
-"@violetprotocol/sdk@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@violetprotocol/sdk/-/sdk-0.0.33.tgz#7a081fe39598cd184bfad71028305750f1d19bf6"
-  integrity sha512-XO4FQ3T9UTXnZ5FD77+ZyebNvk8OMPrmLxEy+yOVRqOlJya+AMlrGXwTCxdouooi/j9Qzu22Zh20jZ0Gtc8cmg==
+"@violetprotocol/sdk@0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@violetprotocol/sdk/-/sdk-0.0.34.tgz#e884ab2d68a803b0a3f33ad3372408ed6aa0df1c"
+  integrity sha512-uF/c7lDU5raurTHiEzXh1WyOV124rI6nPSMmnhfa9lm+Zei436gyE2y18GVQJR+PhoLuQ1M3QAhD861nacOvqA==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bytes" "^5.7.0"

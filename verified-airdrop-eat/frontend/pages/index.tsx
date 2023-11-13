@@ -8,7 +8,6 @@ import {
 import styles from '../styles/Home.module.css'
 import { NextPage } from 'next'
 import { VerifiedAirdropAbi } from '../abis/VerifiedAirdrop'
-import { packParameters } from '@violetprotocol/ethereum-access-token-helpers/dist/utils'
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { buildAuthorizationUrl } from '@violetprotocol/sdk'
@@ -20,8 +19,10 @@ const Home: NextPage = () => {
   const signer = useSigner()
   // The verified airdrop address in optimismGoerli
   const verifiedAirdropAddress = '0xae44841b3634D5DEAba372f5Fb822582817ea556'
-  const [packedTxData, setPackedTxData] = useState<string>('')
-  const [functionSignature, setFunctionSignature] = useState<string>('')
+  /** Packed TXData with parameters of the EAT gated function */
+  const txData = '0x'
+  /** Function Signature of the EAT gated function */
+  const functionSignature = '0x51536b2c'
   /** State that keeps track if user already claimed the airdrop */
   const [eligible, setEligible] = useState<boolean>()
   const [authorizationUrl, setAuthorizationUrl] = useState<string>()
@@ -41,14 +42,6 @@ const Home: NextPage = () => {
         signer,
       )
       if (!ethersAidropContract) return
-      const functionFragment =
-        ethersAidropContract.interface.getFunction('claimAirdrop')
-      setFunctionSignature(
-        ethersAidropContract.interface.getSighash(functionFragment),
-      )
-      setPackedTxData(
-        packParameters(ethersAidropContract.interface, 'claimAirdrop', []),
-      )
       ethersAidropContract.callStatic.claimed(address).then((claimedResult) => {
         setEligible(!claimedResult)
       })
@@ -80,7 +73,7 @@ const Home: NextPage = () => {
         // Add your callback URL
         redirectUrl: 'https://eat-airdrop-demo.violet.co/callback',
         transaction: {
-          data: packedTxData,
+          data: txData,
           functionSignature: functionSignature,
           targetContract: verifiedAirdropAddress,
         },
@@ -89,7 +82,7 @@ const Home: NextPage = () => {
       })
       setAuthorizationUrl(builtAuthorizationUrl)
     }
-  }, [address, chain, functionSignature, packedTxData])
+  }, [address, chain])
 
   useEffect(() => {
     if (authorizationUrl == null || eligible == null) {

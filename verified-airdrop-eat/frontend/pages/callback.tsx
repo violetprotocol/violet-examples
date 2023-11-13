@@ -11,37 +11,7 @@ import { VerifiedAirdropAbi } from '../abis/VerifiedAirdrop'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Circles } from 'react-loader-spinner'
-
-/**
- * This is the format which Violet will return the token
- * on the query parameters of your callback page
- * */
-export interface EthereumAccessToken {
-  expiry: number
-  signature: Signature
-}
-
-/**
- * Standard EIP712 signature interface
- * */
-export interface Signature {
-  v: number
-  r: string
-  s: string
-}
-
-/**
- * Auxiliary method to transform the signature from a string
- * into the EIP712 structure. This is for example purposes
- * and you can use the splitSignature method exported from the violet-sdk
- * */
-export const splitSignature = (signature: string): Signature => {
-  return {
-    v: parseInt(signature.substring(130, 132), 16),
-    r: '0x' + signature.substring(2, 66),
-    s: '0x' + signature.substring(66, 130),
-  }
-}
+import { EAT, parseEncodedEAT } from '@violetprotocol/sdk'
 
 const Home: NextPage = () => {
   const router = useRouter()
@@ -68,24 +38,20 @@ const Home: NextPage = () => {
    *  State to keep track of our received token
    *  */
   const [ethereumAccessToken, setEthereumAccessToken] =
-    useState<EthereumAccessToken>()
+    useState<EAT>()
   const [txError, setTxError] = useState()
   const [tx, setTx] = useState<string>()
 
   /**
    *  Decodes the token from base64 into:
    *  {
-   *    token: string
+   *    token: Signature
    *    expiry: number
    *  }
-   *  Furthermore, splits the signature into the three components
-   *  mentioned above on the Signature interface
    *  */
   useEffect(() => {
     if (base64EncodedToken) {
-      const eat = JSON.parse(atob(base64EncodedToken.toString()))
-      eat.signature = splitSignature(eat.signature)
-      console.log(eat)
+      const eat = parseEncodedEAT(base64EncodedToken.toString())
       setEthereumAccessToken(eat)
     }
   }, [base64EncodedToken])
