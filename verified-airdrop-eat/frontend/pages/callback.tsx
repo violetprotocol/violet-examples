@@ -72,10 +72,10 @@ const Home: NextPage = () => {
     ) {
       mutateAsync({
         args: [
-          ethereumAccessToken?.signature.v,
-          ethereumAccessToken?.signature.r,
-          ethereumAccessToken?.signature.s,
-          ethereumAccessToken?.expiry,
+          ethereumAccessToken.signature.v,
+          ethereumAccessToken.signature.r,
+          ethereumAccessToken.signature.s,
+          ethereumAccessToken.expiry,
         ],
       })
         .then((sentTransaction) => {
