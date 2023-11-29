@@ -47,20 +47,9 @@ export function shouldBehaveLikeCompliantFactory(): void {
         );
       
 
-      // const initCodeHash = ethers.keccak256(compliantERC20Bytecode.concat(
-      //   ethers.solidityPacked(
-      //     ["string", "string", "address", "address"],
-      //     ["cERC20", "cERC20", (await this.signers.user.getAddress()).toLowerCase(), (await this.mockERC20.getAddress()).toLowerCase()]
-      //   ).slice(2)));
       const initCodeHash = ethers.keccak256(compliantERC20Bytecode);
       const salt = ethers.keccak256(ethers.solidityPacked(["address"], [await this.mockERC20.getAddress()]))
       const factoryAddress = (await this.compliantFactory.getAddress()).toLowerCase();
-      // console.log("Current salt:")
-      // console.log(salt);
-      // console.log("Current mockerc20:")
-      // console.log(await this.mockERC20.getAddress());
-      // console.log("Current violetid:")
-      // console.log(await this.signers.user.getAddress());
 
       const deployedAddress = ethers.getCreate2Address(
         factoryAddress,
@@ -75,7 +64,7 @@ export function shouldBehaveLikeCompliantFactory(): void {
       )
       console.log(tx.data);
 
-      // expect(deployedCreate2Address).to.be.equal(deployedAddress);
+      expect(deployedCreate2Address).to.be.equal(deployedAddress);
     });
   });
 }
