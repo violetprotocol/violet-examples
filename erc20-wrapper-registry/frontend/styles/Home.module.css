@@ -1,8 +1,11 @@
 .container {
-  width: 100%;
-  max-width: 1440px;
   padding: 0 1rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
@@ -39,6 +42,7 @@
 .title a:active {
   text-decoration: underline;
   text-decoration-color: #84309c;
+  transition: all 0.2s ease;
 }
 
 .title {
@@ -187,6 +191,16 @@
 .logo {
   height: 1em;
   margin-left: 0.5rem;
+}
+
+.switchNetwork {
+  cursor: pointer;
+}
+.switchNetwork:hover {
+  text-decoration: underline;
+  text-decoration-color: #84309c;
+  color: #84309c;
+  transition: all 0.2s ease;
 }
 
 @media (max-width: 768px) {
