@@ -8,7 +8,7 @@ import { IVioletID } from "@violetprotocol/violetid/contracts/IVioletID.sol";
 /**
  * @dev ERC20 token contract that only allows wrapping and unwraping to valid VioletID holders
  *
- * Currently uses the VioletID status 1 representing enrollment
+ * Currently uses the VioletID status 1 representing enrollment, which includes initial screening and KYC/KYB.
  */
 contract CompliantERC20 is ERC20 {
 	address nonCompliantERC20;
