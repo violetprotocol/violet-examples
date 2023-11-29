@@ -102,7 +102,7 @@ const Home: NextPage = () => {
           </h1>
 
           <p className={styles.description}>
-            Claim an aidrop by enrolling and authenticating with{' '}
+            Claim an airdrop by enrolling and authenticating with{' '}
             <span className={styles.gradientText0}>
               <a>Violet</a>
             </span>
