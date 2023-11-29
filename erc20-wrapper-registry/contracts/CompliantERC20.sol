@@ -5,24 +5,28 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { IVioletID } from "@violetprotocol/violetid/contracts/IVioletID.sol";
 
+
+error AccountWithoutVioletIDRequiredStatus();
+
 /**
  * @dev ERC20 token contract that only allows wrapping and unwraping to valid VioletID holders
  *
  * Currently uses the VioletID status 1 representing enrollment, which includes initial screening and KYC/KYB.
  */
 contract CompliantERC20 is ERC20 {
-	address nonCompliantERC20;
+	IERC20 permissionlessERC20;
 	uint256 public tokensWrapped;
-  IVioletID violetID;
+	IVioletID violetID;
 
   constructor(string memory name_, string memory symbol_, address violetID_, address _nonCompliantERC20) ERC20(name_, symbol_) {
     violetID = IVioletID(violetID_);
-		nonCompliantERC20 = _nonCompliantERC20;
+		permissionlessERC20 = IERC20(_nonCompliantERC20);
   }
 
   modifier onlyVioletIDHolders(address account) {
       uint8 isEnrolledStatus = 1;
       require(violetID.hasStatus(account, isEnrolledStatus), "account does not have a VioletID");
+      if (!violetID.hasStatus(account, isEnrolledStatus)) revert AccountWithoutVioletIDRequiredStatus();
       _;
   }
 
@@ -41,7 +45,7 @@ contract CompliantERC20 is ERC20 {
 	function wrap(
 	  uint256 amount
 	) public virtual onlyVioletIDHolders(msg.sender) {
-		IERC20(nonCompliantERC20).transferFrom(msg.sender, address(this), amount);
+		permissionlessERC20.transferFrom(msg.sender, address(this), amount);
 		tokensWrapped += amount;
 		super._mint(msg.sender, amount);
 	}
@@ -50,9 +54,8 @@ contract CompliantERC20 is ERC20 {
 	  uint256 amount
 	) public virtual onlyVioletIDHolders(msg.sender) {
 		require(tokensWrapped >= amount, "cERC20_unwrap: amount to unwrap exceeds total wrapped");
-		_burn(msg.sender, amount);
-
-		IERC20(nonCompliantERC20).transfer(msg.sender, amount);
 		tokensWrapped -= amount;
+		_burn(msg.sender, amount);
+		permissionlessERC20.transfer(msg.sender, amount);
 	}
 }

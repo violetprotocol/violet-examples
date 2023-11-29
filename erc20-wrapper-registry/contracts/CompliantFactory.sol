@@ -5,7 +5,6 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { IVioletID } from "@violetprotocol/violetid/contracts/IVioletID.sol";
 import "./CompliantERC20.sol";
-import { console } from "hardhat/console.sol";
 
 /**
  * @dev ERC20 token factory that builds a new ERC20 using the previous token address

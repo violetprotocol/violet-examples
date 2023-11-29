@@ -15,7 +15,9 @@ import { Circles } from 'react-loader-spinner'
 import { ethers } from 'ethers'
 import { CompliantERC20Abi } from '../abis/CompliantERC20'
 import { ERC20Abi } from '../abis/ERC20'
+import { LoadingCircles } from '../components/loading'
 
+// OPTIMISM GOERLI
 const COMPLIANT_FACTORY_ADDRESS = '0x94930faD31Eec31f21d406C5c650cc5925822B45'
 const VIOLET_ID_ADDRESS = '0x2a0988b07C538a097Ad8b693369f6e42991591F5'
 
@@ -156,7 +158,7 @@ const Home: NextPage = () => {
           </h1>
 
           <p className={styles.description}>
-            Wrap your ERC20 token and make it compliant with{' '}
+            Make your ERC20 token compliant with{' '}
             <span className={styles.gradientText0}>
               <a>VioletID</a>
             </span>
@@ -184,17 +186,7 @@ const Home: NextPage = () => {
           ) : null}
 
           {isPageLoading ? (
-            <div>
-              <div className={styles.grid}>
-                <Circles
-                  height="80"
-                  width="80"
-                  color="#c35ab1"
-                  ariaLabel="circles-loading"
-                  visible={true}
-                />
-              </div>
-            </div>
+            <LoadingCircles />
           ) : null}
 
           {!isPageLoading ? (
