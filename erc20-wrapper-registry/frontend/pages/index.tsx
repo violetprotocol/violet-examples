@@ -4,6 +4,7 @@ import {
   useConnectionStatus,
   useContract,
   useContractWrite,
+  useNetwork,
   useSigner,
 } from '@thirdweb-dev/react'
 import styles from '../styles/Home.module.css'
@@ -15,24 +16,32 @@ import { ethers } from 'ethers'
 import { CompliantERC20Abi } from '../abis/CompliantERC20'
 import { ERC20Abi } from '../abis/ERC20'
 
+const COMPLIANT_FACTORY_ADDRESS = '0x94930faD31Eec31f21d406C5c650cc5925822B45'
+const VIOLET_ID_ADDRESS = '0x2a0988b07C538a097Ad8b693369f6e42991591F5'
+
 const Home: NextPage = () => {
   const chain = useChain()
   const status = useConnectionStatus()
   const signer = useSigner()
-  const compliantFactoryAddress = '0x94930faD31Eec31f21d406C5c650cc5925822B45'
-  const violetIdAddress = '0x2a0988b07C538a097Ad8b693369f6e42991591F5'
+  const [, switchNetwork] = useNetwork()
   const { contract: compliantFactoryContract, isLoading: isContractLoading } =
-    useContract(compliantFactoryAddress, CompliantFactoryAbi)
-  const [isPageLoading, setIsPageLoading] = useState<boolean>(true)
-  const [isWrongChain, setIsWrongChain] = useState<boolean>()
+    useContract(COMPLIANT_FACTORY_ADDRESS, CompliantFactoryAbi)
+  const [isPageLoading, setIsPageLoading] = useState(true)
+  const [isWrongChain, setIsWrongChain] = useState(false)
   const [tokenInput, setTokenInput] = useState<string>()
   const [nonCompliantERC20, setNonCompliantERC20] = useState<string>()
   const [foundDeployedWrappedErc20, setFoundDeployedWrappedErc20] = useState()
-  const [erc20NotWrapped, setErc20NotWrapped] = useState<boolean>(false)
-  const [compliantErc20, setCompliantErc20] = useState<any>()
+  const [erc20NotWrapped, setErc20NotWrapped] = useState(false)
+  const [compliantErc20, setCompliantErc20] = useState<{
+    symbol: string
+    name: string
+  }>()
   const [erc20InstanceError, setErc20InstanceError] = useState<string>()
-  const [readyToWrap, setReadyToWrap] = useState<boolean>()
-  const [erc20ToBeWrapped, setErc20ToBeWrapped] = useState<any>()
+  const [readyToWrap, setReadyToWrap] = useState(false)
+  const [erc20ToBeWrapped, setErc20ToBeWrapped] = useState<{
+    symbol: string
+    name: string
+  }>()
   const [wrapTransaction, setWrapTransaction] = useState<string>()
   const {
     mutateAsync,
@@ -47,6 +56,7 @@ const Home: NextPage = () => {
         CompliantERC20Abi,
         signer,
       )
+
       if (compliantErc20) {
         compliantErc20.callStatic
           .symbol()
@@ -70,6 +80,7 @@ const Home: NextPage = () => {
           ERC20Abi,
           signer,
         )
+
         if (nonCompliantErc20Contract) {
           nonCompliantErc20Contract.callStatic
             .name()
@@ -97,10 +108,11 @@ const Home: NextPage = () => {
       signer
     ) {
       const compliantFactory = new ethers.Contract(
-        compliantFactoryAddress,
+        COMPLIANT_FACTORY_ADDRESS,
         CompliantFactoryAbi,
         signer,
       )
+
       if (compliantFactory) {
         compliantFactory.callStatic
           .erc20ToCompliantWrapped(nonCompliantERC20)
@@ -121,12 +133,6 @@ const Home: NextPage = () => {
     }
   }, [isContractLoading, isWriteLoading])
 
-  useEffect(() => {
-    if (wrapTransaction) {
-      setIsPageLoading(false);
-    }
-  }, [wrapTransaction])
-
   /**
    * Aux hook to make sure user connected in optimismGoerli
    * */
@@ -144,7 +150,7 @@ const Home: NextPage = () => {
         <div className={styles.header}>
           <h1 className={styles.title}>
             <span className={styles.gradientText0}>
-              <a href="https://docs.violet.co">Violet ID {''}</a>
+              <a href="https://docs.violet.co">VioletID </a>
             </span>
             Compliant Token Wrapper Demo
           </h1>
@@ -152,7 +158,7 @@ const Home: NextPage = () => {
           <p className={styles.description}>
             Wrap your ERC20 token and make it compliant with{' '}
             <span className={styles.gradientText0}>
-              <a>Violet ID</a>
+              <a>VioletID</a>
             </span>
           </p>
 
@@ -164,13 +170,18 @@ const Home: NextPage = () => {
               }}
             />
           </div>
+
           {isWrongChain && status == 'connected' ? (
             <p className={styles.description}>
-              Unsupported network, please connect to optimism goerli
+              Unsupported network, please{' '}
+              <span
+                className={styles.switchNetwork}
+                onClick={() => switchNetwork?.(420)}
+              >
+                connect to Optimism Goerli (420)
+              </span>
             </p>
-          ) : (
-            <div></div>
-          )}
+          ) : null}
 
           {isPageLoading ? (
             <div>
@@ -184,8 +195,10 @@ const Home: NextPage = () => {
                 />
               </div>
             </div>
-          ) : (
-            <div>
+          ) : null}
+
+          {!isPageLoading ? (
+            <>
               {wrapTransaction ? (
                 <div>
                   <p className={styles.description}>
@@ -211,7 +224,6 @@ const Home: NextPage = () => {
                   !nonCompliantERC20 ? (
                     <div>
                       <div>
-                        {' '}
                         <p className={styles.description}>
                           Enter the address of an ERC20 token to wrap it
                         </p>
@@ -236,32 +248,38 @@ const Home: NextPage = () => {
                     </div>
                   ) : (
                     <div>
-                      {erc20NotWrapped && readyToWrap ? (
+                      {erc20NotWrapped && readyToWrap && erc20ToBeWrapped ? (
                         <div>
                           <div className={styles.connect}>
                             <a className={styles.gradientText3}>
                               Symbol: {erc20ToBeWrapped.symbol}{' '}
                             </a>
                           </div>
+
                           <div className={styles.connect}>
                             <a className={styles.gradientText3}>
                               Name: {erc20ToBeWrapped.name}{' '}
                             </a>
                           </div>
+
                           <button
                             className={styles.buttonRound}
                             onClick={async () => {
                               setIsPageLoading(true)
                               mutateAsync({
-                                args: [nonCompliantERC20, violetIdAddress],
-                              }).then((sentTransaction) => {
-                                setWrapTransaction(
-                                  sentTransaction.receipt.transactionHash,
-                                )
-                                console.log(
-                                  sentTransaction.receipt.transactionHash,
-                                )
+                                args: [nonCompliantERC20, VIOLET_ID_ADDRESS],
                               })
+                                .then((sentTransaction) => {
+                                  setWrapTransaction(
+                                    sentTransaction.receipt.transactionHash,
+                                  )
+                                  console.log(
+                                    sentTransaction.receipt.transactionHash,
+                                  )
+                                })
+                                .finally(() => {
+                                  setIsPageLoading(false)
+                                })
                             }}
                           >
                             <a className={styles.gradientText0}>Wrap</a>
@@ -280,6 +298,7 @@ const Home: NextPage = () => {
                           )}
                         </div>
                       )}
+
                       {compliantErc20 ? (
                         <div>
                           <div className={styles.connect}>
@@ -316,8 +335,8 @@ const Home: NextPage = () => {
                   )}
                 </div>
               )}
-            </div>
-          )}
+            </>
+          ) : null}
         </div>
       </div>
     </main>
