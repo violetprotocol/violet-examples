@@ -3,7 +3,6 @@ import {
   useChain,
   useConnectionStatus,
   useContract,
-  useContractWrite,
   useSigner,
 } from '@thirdweb-dev/react'
 import styles from '../styles/Home.module.css'
@@ -47,11 +46,6 @@ const Home: NextPage = () => {
     name: string
   }>()
   const [wrapTransaction, setWrapTransaction] = useState<string>()
-  const {
-    mutateAsync,
-    isLoading: isWriteLoading,
-    error: _error,
-  } = useContractWrite(compliantFactoryContract, 'deployCompliantErc')
 
   useEffect(() => {
     if (foundDeployedWrappedErc20) {
@@ -132,10 +126,10 @@ const Home: NextPage = () => {
   }, [nonCompliantERC20, signer])
 
   useEffect(() => {
-    if (!isContractLoading && !isWriteLoading) {
+    if (!isContractLoading) {
       setIsPageLoading(false)
     }
-  }, [isContractLoading, isWriteLoading])
+  }, [isContractLoading])
 
   /**
    * Aux hook to make sure user connected in optimismGoerli
