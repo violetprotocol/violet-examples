@@ -4,28 +4,30 @@ import {
   useConnectionStatus,
   useContract,
   useContractWrite,
-  useNetwork,
   useSigner,
 } from '@thirdweb-dev/react'
 import styles from '../styles/Home.module.css'
 import { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { CompliantFactoryAbi } from '../abis/CompliantFactory'
-import { Circles } from 'react-loader-spinner'
 import { ethers } from 'ethers'
 import { CompliantERC20Abi } from '../abis/CompliantERC20'
 import { ERC20Abi } from '../abis/ERC20'
 import { LoadingCircles } from '../components/loading'
+import { UnsupportedNetwork } from '../components/unsupportedNetwork'
+import { SuccessfulWrapTransaction } from '../components/successfulWrapTransaction'
+import { ERC20Input } from '../components/erc20Input'
+import { WrapERC20 } from '../components/wrapErc20'
+import { ERC20InstanceError } from '../components/erc20InstanceError'
+import { DeployedCompliantERC20 } from '../components/deployedCompliantErc20'
 
 // OPTIMISM GOERLI
 const COMPLIANT_FACTORY_ADDRESS = '0x94930faD31Eec31f21d406C5c650cc5925822B45'
-const VIOLET_ID_ADDRESS = '0x2a0988b07C538a097Ad8b693369f6e42991591F5'
 
 const Home: NextPage = () => {
   const chain = useChain()
   const status = useConnectionStatus()
   const signer = useSigner()
-  const [, switchNetwork] = useNetwork()
   const { contract: compliantFactoryContract, isLoading: isContractLoading } =
     useContract(COMPLIANT_FACTORY_ADDRESS, CompliantFactoryAbi)
   const [isPageLoading, setIsPageLoading] = useState(true)
@@ -174,117 +176,40 @@ const Home: NextPage = () => {
           </div>
 
           {isWrongChain && status == 'connected' ? (
-            <p className={styles.description}>
-              Unsupported network, please{' '}
-              <span
-                className={styles.switchNetwork}
-                onClick={() => switchNetwork?.(420)}
-              >
-                connect to Optimism Goerli (420)
-              </span>
-            </p>
+            <UnsupportedNetwork />
           ) : null}
 
-          {isPageLoading ? (
-            <LoadingCircles />
-          ) : null}
+          {isPageLoading ? <LoadingCircles /> : null}
 
           {!isPageLoading ? (
             <>
               {wrapTransaction ? (
-                <div>
-                  <p className={styles.description}>
-                    You have successfully wrapped your token!
-                  </p>
-                  <div className={styles.connect}>
-                    <a
-                      className={styles.gradientText3}
-                      href={
-                        'https://goerli-optimism.etherscan.io/tx/' +
-                        wrapTransaction
-                      }
-                    >
-                      Click here to see the transaction!
-                    </a>
-                  </div>
-                </div>
+                <SuccessfulWrapTransaction wrapTransaction={wrapTransaction} />
               ) : (
                 <div>
                   {status == 'connected' &&
                   !isWrongChain &&
                   !isPageLoading &&
                   !nonCompliantERC20 ? (
-                    <div>
-                      <div>
-                        <p className={styles.description}>
-                          Enter the address of an ERC20 token to wrap it
-                        </p>
-                        <input
-                          className={styles.card}
-                          onChange={async (inputtedText) => {
-                            setTokenInput(inputtedText.target.value)
-                          }}
-                        />
-                      </div>
-
-                      <div>
-                        <button
-                          className={styles.buttonalt}
-                          onClick={async () => {
-                            setNonCompliantERC20(tokenInput)
-                          }}
-                        >
-                          <a className={styles.gradientText1}>Set ERC20</a>
-                        </button>
-                      </div>
-                    </div>
+                    <ERC20Input
+                      setTokenInput={setTokenInput}
+                      setNonCompliantERC20={setNonCompliantERC20}
+                      tokenInput={tokenInput}
+                    />
                   ) : (
                     <div>
                       {erc20NotWrapped && readyToWrap && erc20ToBeWrapped ? (
-                        <div>
-                          <div className={styles.connect}>
-                            <a className={styles.gradientText3}>
-                              Symbol: {erc20ToBeWrapped.symbol}{' '}
-                            </a>
-                          </div>
-
-                          <div className={styles.connect}>
-                            <a className={styles.gradientText3}>
-                              Name: {erc20ToBeWrapped.name}{' '}
-                            </a>
-                          </div>
-
-                          <button
-                            className={styles.buttonRound}
-                            onClick={async () => {
-                              setIsPageLoading(true)
-                              mutateAsync({
-                                args: [nonCompliantERC20, VIOLET_ID_ADDRESS],
-                              })
-                                .then((sentTransaction) => {
-                                  setWrapTransaction(
-                                    sentTransaction.receipt.transactionHash,
-                                  )
-                                  console.log(
-                                    sentTransaction.receipt.transactionHash,
-                                  )
-                                })
-                                .finally(() => {
-                                  setIsPageLoading(false)
-                                })
-                            }}
-                          >
-                            <a className={styles.gradientText0}>Wrap</a>
-                          </button>
-                        </div>
+                        <WrapERC20
+                          erc20ToBeWrapped={erc20ToBeWrapped}
+                          compliantFactoryContract={compliantFactoryContract}
+                          setIsPageLoading={setIsPageLoading}
+                          nonCompliantERC20={nonCompliantERC20}
+                          setWrapTransaction={setWrapTransaction}
+                        />
                       ) : (
                         <div>
                           {erc20InstanceError ? (
-                            <div>
-                              <a className={styles.gradientText2}>
-                                This address does not seem to be an ERC20 token
-                              </a>
-                            </div>
+                            <ERC20InstanceError />
                           ) : (
                             <div></div>
                           )}
@@ -292,34 +217,10 @@ const Home: NextPage = () => {
                       )}
 
                       {compliantErc20 ? (
-                        <div>
-                          <div className={styles.connect}>
-                            <a className={styles.gradientText2}>
-                              Your compliant token is already deployed! 🎉{' '}
-                            </a>
-                          </div>
-                          <div className={styles.connect}>
-                            <a
-                              className={styles.gradientText3}
-                              href={
-                                'https://goerli-optimism.etherscan.io/address/' +
-                                foundDeployedWrappedErc20
-                              }
-                            >
-                              Deployed at: {foundDeployedWrappedErc20}{' '}
-                            </a>
-                          </div>
-                          <div className={styles.connect}>
-                            <a className={styles.gradientText3}>
-                              Symbol: {compliantErc20.symbol}{' '}
-                            </a>
-                          </div>
-                          <div className={styles.connect}>
-                            <a className={styles.gradientText3}>
-                              Name: {compliantErc20.name}{' '}
-                            </a>
-                          </div>
-                        </div>
+                        <DeployedCompliantERC20
+                          foundDeployedWrappedErc20={foundDeployedWrappedErc20}
+                          compliantErc20={compliantErc20}
+                        />
                       ) : (
                         <div className={styles.grid}></div>
                       )}
