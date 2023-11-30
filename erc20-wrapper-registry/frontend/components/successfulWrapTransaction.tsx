@@ -18,7 +18,7 @@ export const SuccessfulWrapTransaction: FC<SuccessfulWrapTransactionProps> = ({
           className={styles.gradientText3}
           href={'https://goerli-optimism.etherscan.io/tx/' + wrapTransaction}
         >
-          Click here to see the transaction!
+          To test wrapping (and unwrapping) click in this link
         </a>
       </div>
     </div>
